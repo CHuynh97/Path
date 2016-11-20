@@ -8,11 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -20,6 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     LinkedList<EditText[]> tasks = new LinkedList<EditText[]>();
+    ArrayList<Location> locationList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,85 +33,58 @@ public class MainActivity extends AppCompatActivity {
 
         final LinearLayout LLayout = (LinearLayout) findViewById(R.id.LinLayout);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button addEntry = (Button) findViewById(R.id.addentry_btn);
+        addEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText[] entry = addTask(LLayout);
+                EditText[] entry = addTask(LLayout, tasks.size()+1);
                 tasks.add(entry);
             }
         });
 
         //String[] parsed = Location.parseAdress;
         //Location location = new Locatrion(pasrsed);
-        Button btnSubmit = new Button(getApplicationContext());
-        btnSubmit.setText("Submit");
-        LLayout.addView(btnSubmit);
+        Button btnSubmit = (Button)findViewById(R.id.submit_entriesbtn);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //List<Location> locationList = getData(tasks);
-                Toast.makeText(getApplicationContext(), "btnSubmit works!", Toast.LENGTH_SHORT);
+                int size = tasks.size();
+                for (int i = 0; i < size; i++) {
+                    String info = tasks.get(i)[0].getText().toString() + "\n" + tasks.get(i)[1].getText().toString() + "\n";
+                    TextView printer = new TextView(getApplicationContext());
+                    printer.setText(info);
+                    printer.setTextColor(Color.BLACK);
+                    LLayout.addView(printer);
+                }
             }
         });
 
     }
 
+    public EditText[] addTask(LinearLayout layout, int entryCount) {
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        View entry = getLayoutInflater().inflate(R.layout.task_layout, layout);
+        if (entry instanceof ViewGroup) {
+            EditText[] results = new EditText[2];
+            results[0] = (EditText)entry.findViewById(R.id.task_location);
+            results[0].setId(R.id.task_location + entryCount*2);
+            results[1] = (EditText)entry.findViewById(R.id.task_duration);
+            results[1].setId(R.id.task_duration + entryCount*2);
+            return results;
         }
+        return null;
 
-        return super.onOptionsItemSelected(item);
     }
 
-    public EditText[] addTask(LinearLayout layout) {
-        TextView locationHeader = new TextView(getApplicationContext());
-        locationHeader.setTextColor(Color.BLACK);
-        locationHeader.setText("Location:");
-        layout.addView(locationHeader);
-        EditText location = new EditText(getApplicationContext());
-        location.setTextColor(Color.BLACK);
-        location.setBackgroundResource(R.drawable.edittext_shape);
-        layout.addView(location);
+    public void getData(List<EditText[]> list) {
 
-        TextView timeHeader = new TextView(getApplicationContext());
-        timeHeader.setTextColor(Color.BLACK);
-        timeHeader.setText("Time:");
-        layout.addView(timeHeader);
-        EditText timeDuration = new EditText(getApplicationContext());
-        timeDuration.setTextColor(Color.BLACK);
-        timeDuration.setBackgroundResource(R.drawable.edittext_shape);
-        layout.addView(timeDuration);
-        return new EditText[]{location, timeDuration};
-    }
-
-
-    public List<Location> getData(List<EditText[]> list) {
-        List<Location> results = new ArrayList<>();
         for (EditText[] entry : list) {
             String[] address = Location.parseAdress(entry[0].getText().toString());
             int duration = Integer.parseInt(entry[1].getText().toString());
             Location location = new Location(address, duration);
-            results.add(location);
+            locationList.add(location);
         }
-        return results;
+
     }
 
 
