@@ -29,14 +29,26 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+        final EditText editText = (EditText)findViewById(R.id.editText);
 
         Button next = (Button)findViewById(R.id.next);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final Location location = new  Location("2242 Yorktown circle", "mississauga", "ON", "L6M0G2");
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("base_loc", location);
                 startActivity(intent);
             }
         });
+        Button aboutButton = (Button)findViewById(R.id.helpButton);
+        aboutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Help.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }
