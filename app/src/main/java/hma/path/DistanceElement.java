@@ -12,6 +12,7 @@ public class DistanceElement {
         return visited;
     }
 
+    private long timeOfTrip;
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
@@ -39,7 +40,11 @@ public class DistanceElement {
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
+    public void setDurationTimeOfTransport(long time) {
+        this.timeOfTrip = time;
+    }
 
+    public long getDurationTimeOfTransport() {return this.timeOfTrip;}
     private boolean visited = false;
     private long timeSpent, tripTime;
     private String postalCode;
