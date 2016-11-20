@@ -5,7 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="borderColor">#000000</color>
     <color name="entry_numbackground">#2b6d36</color>
-    <color name="addentry_btn">#35b149</color>
+    <color name="paththeme_green">#35b149</color>
     <color name="reset_btn">#404041</color>
     <color name="white">#FFFFFF</color>
 </resources>

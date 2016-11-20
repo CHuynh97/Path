@@ -8,8 +8,11 @@
     <TextView
         android:layout_width="75dp"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:background="@color/entry_numbackground"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        android:id="@+id/task_count"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +28,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:gravity="center"
+
                 android:text="Task/Location"/>
 
             <CheckBox
@@ -36,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="Priority"/>
 
             <CheckBox
@@ -47,7 +51,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:text="End"/>
 
         </LinearLayout>
@@ -63,15 +67,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:text="Estimated Duration:"/>
             <EditText
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:id="@+id/task_duration"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:gravity="center"
                 android:text="mins"/>
         </LinearLayout>
 

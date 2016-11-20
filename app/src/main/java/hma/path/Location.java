@@ -5,16 +5,31 @@ import android.text.TextUtils;
 
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
+
 /**
  * Created by Chris on 2016-11-19.
  */
-public class Location {
-    private String mAddressName;
-    private String mCity;
-    private String mProvince;
-    private String mPostalCode;
-    private long mDuration;
-    private DateTime mTimeArrived;
+public class Location implements Serializable {
+
+    private String address, city, province, postalCode;
+    private long timeSpent = -1;
+    private long timeLeft;
+
+    public Location(String address, String city, String province, String postalCode, long timeSpent) {
+        this.address = address;
+        this.city = city;
+        this.province = province;
+        this.postalCode = postalCode;
+        this.timeSpent = 60*1000*timeSpent;
+    }
+
+    public Location(String address, String city, String province, String postalCode) {
+        this.address = address;
+        this.city = city;
+        this.province = province;
+        this.postalCode = postalCode;
+    }
 
     public static String[] parseAdress(String address) {
         String[] result = address.split(", ");
@@ -22,38 +37,37 @@ public class Location {
     }
 
     public Location(String[] address, int duration) {
-        mAddressName = address[0];
-        mCity = address[1];
-        mProvince = address[2];
-        mPostalCode = address[3];
-        this.mDuration = duration;
+        this.address = address[0];
+        city = address[1];
+        province = address[2];
+        postalCode = address[3];
+        timeSpent = duration;
     }
 
     public String getAddressName() {
-        return mAddressName;
+        return address;
     }
 
     public String getCity() {
-        return mCity;
+        return city;
     }
 
     public String getProvince() {
-        return mProvince;
+        return province;
     }
 
     public String getPostalCode() {
-        return mPostalCode;
+        return postalCode;
     }
 
-    public long getDuration() {
-        return mDuration;
+    public long getTimeSpentAtLocation() {
+        return timeSpent;
     }
 
-    public DateTime getTimeArrived() {
-        return this.mTimeArrived;
+    public void setTimeLeft(long timeLeft) {
+        this.timeLeft = timeLeft;
     }
-
-    public void setTimeArrived(DateTime time) {
-        mTimeArrived = time;
+    public long getTimeLeft() {
+        return this.timeLeft;
     }
 }
