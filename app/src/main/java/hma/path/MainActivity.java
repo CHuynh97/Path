@@ -19,7 +19,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     LinkedList<EditText[]> tasks = new LinkedList<EditText[]>();
-    boolean demo = false;
+    boolean demo = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

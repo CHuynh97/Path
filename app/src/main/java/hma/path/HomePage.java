@@ -12,16 +12,22 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-
+        final boolean demo = true;
         final EditText editText = (EditText)findViewById(R.id.home_search);
 
         Button next = (Button)findViewById(R.id.next);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Location location = new  Location("2242 Yorktown circle", "mississauga", "ON", "L6M0G2");
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("base_loc", location);
+                if (demo) {
+                    final Location location = new  Location("2242 Yorktown circle", "mississauga", "ON", "L6M0G2");
+                    intent.putExtra("base_loc", location);
+                }
+                else {
+                    String startInuput = editText.getText().toString();
+                    intent.putExtra("base_loc", startInuput);
+                }
                 startActivity(intent);
             }
         });
