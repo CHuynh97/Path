@@ -14,7 +14,8 @@ public class Location implements Serializable {
 
     private String address, city, province, postalCode;
     private long timeSpent = -1;
-    private long timeLeft;
+    private long timeLeft, timeOfTrip;
+    private long timeArrivedToNextLoc;
 
     public Location(String address, String city, String province, String postalCode, long timeSpent) {
         this.address = address;
@@ -69,5 +70,11 @@ public class Location implements Serializable {
     }
     public long getTimeLeft() {
         return this.timeLeft;
+    }
+    public long getTimeArrivedToNextLoc() {
+        return timeArrivedToNextLoc;
+    }
+    public void setTimeArrivedToNextLoc(long timeArrived) {
+        this.timeArrivedToNextLoc = timeArrived;
     }
 }

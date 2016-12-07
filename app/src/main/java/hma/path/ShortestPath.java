@@ -50,6 +50,7 @@ public class ShortestPath
         finalPath.add(start);
 
         for (int i = 0; i < midNodes.size(); i++) {
+            start.setTimeArrivedToNextLoc(start.getTimeLeft() + distanceMatrix.rows[0].elements[0].duration.inSeconds*1000);
             List<Location> finalPathCopy = new ArrayList<>(finalPath);
             String postalCode = midNodes.get(i).getPostalCode();
             Location currentLocation = null;
@@ -59,12 +60,14 @@ public class ShortestPath
                     break;
                 }
             }
-            currentLocation.setTimeLeft(start.getTimeLeft() + currentLocation.getTimeSpentAtLocation());
+            currentLocation.setTimeLeft(start.getTimeArrivedToNextLoc() + currentLocation.getTimeSpentAtLocation());
+            currentLocation.setTimeArrivedToNextLoc(currentLocation.getTimeLeft() +
+                distanceMatrix.rows[0].elements[i].duration.inSeconds*1000);
             finalPathCopy.add(currentLocation);
 
             List<Location> nodesLeft = new ArrayList<Location>(midNodes);
             nodesLeft.remove(currentLocation);
-            recursive(System.currentTimeMillis() + distanceElements.get(i).getTripTime() + distanceElements.get(i).getTimeSpent(),
+            recursive(currentLocation.getTimeLeft(),
                     nodesLeft, endLocation, currentLocation, false, finalPath);
         }
 
@@ -90,7 +93,7 @@ public class ShortestPath
         //no items left so figure out the time from here to end location;
         if (nodesLeft.size() == 0 && !solved) {
             long timeSpent = MapManager.getLocationsFrom(currentLocation, Arrays.asList(endLocation),
-                    currentTime + currentLocation.getTimeSpentAtLocation()).rows[0].elements[0].duration.inSeconds*1000;
+                    currentLocation.getTimeArrivedToNextLoc()).rows[0].elements[0].duration.inSeconds*1000;
 
             finalLocation.add(endLocation);
             List<Location> finalLocationCopy = new ArrayList<Location>(finalLocation);
@@ -116,16 +119,21 @@ public class ShortestPath
                         break;
                     }
                 }
-                currentLocationNew.setTimeLeft(finalLocation.get(finalLocation.size()-1).getTimeLeft() + currentLocation.getTimeSpentAtLocation());
+
                 if(distanceMatrix.rows[0].elements[i].duration == null) {
                     skippedLocations.add(currentLocationNew);
                 } else {
+                    currentLocationNew.setTimeLeft(
+                           currentLocation.getTimeArrivedToNextLoc()
+                                    +currentLocationNew.getTimeSpentAtLocation());
+                    currentLocationNew.setTimeArrivedToNextLoc(currentLocationNew.getTimeLeft() +
+                            distanceMatrix.rows[0].elements[i].duration.inSeconds*1000
+                    );
                     finalLocation.add(currentLocationNew);
                     List<Location> finalLocationCopy = new ArrayList<Location>(finalLocation);
                     currentLocation.setTimeLeft(finalLocation.get(finalLocation.size()-1).getTimeLeft());
                     recursive(
-                            currentTime + nodesLeft.get(i).getTimeSpentAtLocation()
-                                    + distanceMatrix.rows[0].elements[i].duration.inSeconds * 1000,
+                            currentLocationNew.getTimeArrivedToNextLoc(),
                             nodesLeftNew, endLocation, currentLocationNew, false, finalLocationCopy);
                 }
             }
