@@ -46,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 
                 ArrayList<Location> locations = null;
+                int[] order = null;
                 if (demo) {
                     locations = runSimulation();
+                    order = runSimulation2();
                 }
                 else {
                     final Location startLocation = (Location) getIntent().getExtras().getSerializable("base_loc");
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
                 intent.putExtra("minTime", minTime);
                 intent.putExtra("path", locations);
+                intent.putExtra("order", order);
+                intent.putExtra("OGList", getData(tasks));
                 startActivity(intent);
 
             }
@@ -90,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Location> getData(List<EditText[]> list) {
         ArrayList<Location> locationList = new ArrayList<>();
         for (EditText[] entry : list) {
-            String[] address = Location.parseAdress(entry[0].getText().toString());
+            String[] address = Location.parseAddress(entry[0].getText().toString());
             int duration = Integer.parseInt(entry[1].getText().toString());
             if (address.length != 4) {
                 return null;
@@ -115,4 +119,14 @@ public class MainActivity extends AppCompatActivity {
         return locations;
     }
 
+    public int[] runSimulation2() {
+        final Location startLocation = (Location) getIntent().getExtras().getSerializable("base_loc");
+        List<Location> locationList = new ArrayList<Location>();
+        locationList.add(new Location("1235 Upper Village Dr", "Mississauga", "ON", "L5E3J6", 10));
+        locationList.add(new Location("2800 Erin Centre Blvd", "Mississauga", "ON", "L5M6R5", 12));
+        locationList.add(new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13));
+        Location finalLoc = locationList.get(locationList.size() - 1);
+        locationList.remove(finalLoc);
+        return ShortestPath.shortestPath(startLocation, locationList, finalLoc, System.currentTimeMillis());
+    }
 }

@@ -145,4 +145,76 @@ public class ShortestPath
     public static void getBusTimes() {
 
     }
+
+
+    private static List<int[]> getPermutations(int[] arr) {
+        List<int[]> results = new ArrayList<>();
+        calcPermutations(arr, 0, arr.length-1, results);
+        return  results;
+    }
+
+
+    private static void calcPermutations(int[] arr, int first, int last, List<int[]> results) {
+        if (first < last) {
+            for (int i = first; i <= last; i++) {
+                swap(arr, i, first);
+                calcPermutations(arr, first+1, last, results);
+                swap(arr, i, first);
+            }
+        }
+        else if (first == last) {
+            if (results != null) {
+                results.add(arr.clone());
+            }
+        }
+    }
+
+    private static void swap(int[] arr, int p, int q) {
+        int temp = arr[p];
+        arr[p] = arr[q];
+        arr[q] = temp;
+    }
+
+    public static int[] shortestPath(Location start, List<Location> midNodes, Location end, long currentTimeInMillis) {
+        if (start == null || midNodes == null || end == null) {
+            return null;
+        }
+        long minTime = -1;
+        int size = midNodes.size();
+        int[] indexes = new int[size];
+        for (int i = 0; i < size; i++) {
+            indexes[i] = i;
+        }
+        List<int[]> perms = getPermutations(indexes);
+        int[] result = null;
+        for (int[] arr : perms) {
+            long duration = calcPathDuration(start, midNodes, end, arr, currentTimeInMillis);
+            if (minTime == -1 || minTime > duration) {
+                result = arr;
+                minTime = duration;
+            }
+        }
+        return result;
+    }
+
+    public static long calcPathDuration(Location start, List<Location> locations, Location end, int[] indexes, long currentTimeInMillis) {
+        if (locations.size() == indexes.length) {
+            int size = indexes.length;
+            long duration = start.getTimeSpentAtLocation();
+            long leaveStart = currentTimeInMillis + duration;
+            Location nextLoc = locations.get(indexes[0]);
+            duration += MapManager.getTravelTimeInMillis(start, nextLoc, leaveStart);
+
+            for (int i = 1; i < size; i++) {
+                duration += nextLoc.getTimeSpentAtLocation();
+                long departureTime = currentTimeInMillis + duration;
+                long travelTime = MapManager.getTravelTimeInMillis(nextLoc, locations.get(indexes[i]), departureTime);
+                duration += travelTime;
+                nextLoc = locations.get(indexes[i]);
+            }
+            return duration;
+        }
+        return -1;
+    }
+
 }

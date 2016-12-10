@@ -3,6 +3,7 @@ package hma.path;
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.DistanceMatrix;
+import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.TravelMode;
 
 import java.util.List;
@@ -34,6 +35,19 @@ public class MapManager {
         return distanceMatrix;
     }
 
+    public static long getTravelTimeInMillis(Location a, Location b, long departureTimeInMillis) {
+        try {
+            DistanceMatrixElement element = DistanceMatrixApi.newRequest(context).mode(TravelMode.TRANSIT).origins(formatLocation(a))
+                    .destinations(formatLocation(b)).departureTime(new DateTime(departureTimeInMillis))
+                    .await().rows[0].elements[0];
+            return element.duration.inSeconds*1000;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     private static String formatLocation(Location location) {
         String test = location.getAddressName() + " " + location.getCity() + ", " +
                 location.getProvince() + " " + location.getPostalCode();
@@ -47,5 +61,7 @@ public class MapManager {
         }
         return returnLoc;
     }
+
+
 }
 

@@ -14,7 +14,7 @@ public class Location implements Serializable {
 
     private String address, city, province, postalCode;
     private long timeSpent = -1;
-    private long timeLeft, timeOfTrip;
+    private long timeLeft;
     private long timeArrivedToNextLoc;
 
     public Location(String address, String city, String province, String postalCode, long timeSpent) {
@@ -32,17 +32,17 @@ public class Location implements Serializable {
         this.postalCode = postalCode;
     }
 
-    public static String[] parseAdress(String address) {
+    public static String[] parseAddress(String address) {
         String[] result = address.split(", ");
         return result;
     }
 
-    public Location(String[] address, int duration) {
+    public Location(String[] address, long duration) {
         this.address = address[0];
         city = address[1];
         province = address[2];
         postalCode = address[3];
-        timeSpent = duration;
+        timeSpent = 60*1000*duration;
     }
 
     public String getAddressName() {
