@@ -1,7 +1,9 @@
 package hma.path;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        final LinearLayout LLayout = (LinearLayout) findViewById(R.id.LinLayout);
+        final LinearLayout LLayout = (LinearLayout) findViewById(R.id.map_entry_layout);
 
         Button addEntry = (Button) findViewById(R.id.addentry_btn);
         addEntry.setOnClickListener(new View.OnClickListener() {
@@ -37,14 +39,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        TimePickerDialog timePickerDialog = 
 
-        //String[] parsed = Location.parseAdress;
-        //Location location = new Locatrion(pasrsed);
-        Button btnSubmit = (Button)findViewById(R.id.submit_entriesbtn);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton submitFAB = (FloatingActionButton)findViewById(R.id.submit_fab);
+        submitFAB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                
+            public void onClick(View v) {
                 ArrayList<Location> locations = null;
                 int[] order = null;
                 if (demo) {
@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 
     public EditText[] addTask(LinearLayout layout, int entryCount) {
         View entry = getLayoutInflater().inflate(R.layout.task_layout, layout);
@@ -110,9 +113,8 @@ public class MainActivity extends AppCompatActivity {
         List<Location> locationList = new ArrayList<Location>();
         locationList.add(new Location("1235 Upper Village Dr", "Mississauga", "ON", "L5E3J6", 10));
         locationList.add(new Location("2800 Erin Centre Blvd", "Mississauga", "ON", "L5M6R5", 12));
-        locationList.add(new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13));
-        Location finalLoc = locationList.get(locationList.size() - 1);
-        locationList.remove(finalLoc);
+
+        Location finalLoc = new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13);
         startLocation.setTimeLeft(System.currentTimeMillis());
         ShortestPath.getShortestPath(startLocation, locationList, finalLoc);
         ArrayList<Location> locations = ShortestPath.getFinalPath();
@@ -124,9 +126,7 @@ public class MainActivity extends AppCompatActivity {
         List<Location> locationList = new ArrayList<Location>();
         locationList.add(new Location("1235 Upper Village Dr", "Mississauga", "ON", "L5E3J6", 10));
         locationList.add(new Location("2800 Erin Centre Blvd", "Mississauga", "ON", "L5M6R5", 12));
-        locationList.add(new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13));
-        Location finalLoc = locationList.get(locationList.size() - 1);
-        locationList.remove(finalLoc);
+        Location finalLoc = new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13);
         return ShortestPath.shortestPath(startLocation, locationList, finalLoc, System.currentTimeMillis());
     }
 }
