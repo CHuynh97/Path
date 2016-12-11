@@ -1,8 +1,8 @@
 package hma.path;
 
+
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,23 +12,43 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     LinkedList<EditText[]> tasks = new LinkedList<EditText[]>();
     boolean demo = true;
+
+
+
+    public int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+    public int minute = Calendar.getInstance().get(Calendar.MINUTE);
+
+    public Button timeSetUp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         final LinearLayout LLayout = (LinearLayout) findViewById(R.id.map_entry_layout);
+
+        timeSetUp = (Button)findViewById(R.id.time_setup);
+        timeSetUp.setText(hour + ":" + minute);
+        timeSetUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog tpd = new TimePickerDialog(MainActivity.this, MainActivity.this, hour, minute, false);
+                tpd.show();
+            }
+        });
+
 
         Button addEntry = (Button) findViewById(R.id.addentry_btn);
         addEntry.setOnClickListener(new View.OnClickListener() {
@@ -39,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TimePickerDialog timePickerDialog = 
+       // TimePickerDialog timePickerDialog =
 
         FloatingActionButton submitFAB = (FloatingActionButton)findViewById(R.id.submit_fab);
         submitFAB.setOnClickListener(new View.OnClickListener() {
@@ -128,5 +148,42 @@ public class MainActivity extends AppCompatActivity {
         locationList.add(new Location("2800 Erin Centre Blvd", "Mississauga", "ON", "L5M6R5", 12));
         Location finalLoc = new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13);
         return ShortestPath.shortestPath(startLocation, locationList, finalLoc, System.currentTimeMillis());
+    }
+
+
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        this.hour = hour;
+        this.minute = minute;
+
+
+        StringBuilder display = new StringBuilder();
+
+        if (hour == 12 || hour == 0) {
+            display.append("12:");
+        }
+        else if (hour > 12) {
+            display.append(hour % 12 + ":");
+        }
+        else {
+            display.append(hour + ":");
+        }
+
+        if (minute < 10) {
+            display.append(0);
+        }
+        display.append(minute + ":");
+
+        if (hour >= 12) {
+            display.append(" pm");
+        }
+        else {
+            display.append(" am");
+        }
+
+
+        timeSetUp.setText(display.toString());
+
+
     }
 }

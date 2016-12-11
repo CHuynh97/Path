@@ -72,10 +72,11 @@
                     android:text="Departure Time:"/>
 
 
-                <TimePicker
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:timePickerMode="spinner"></TimePicker>
+               <Button
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="setup time"
+                   android:id="@+id/time_setup"/>
 
 
             </LinearLayout>
