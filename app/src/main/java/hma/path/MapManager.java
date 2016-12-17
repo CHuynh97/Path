@@ -1,23 +1,24 @@
 package hma.path;
 
+
 import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.TravelMode;
-
 import java.util.List;
-
 import org.joda.time.DateTime;
 
 
 public class MapManager {
+
     private static final String API_KEY = "AIzaSyCDmikUWztdbXQBt3Xbn1TZZYDXqhMgXeY";
 
     private static GeoApiContext context;
 
     static {
         context = new GeoApiContext().setApiKey(API_KEY);
+
     }
 
     public static DistanceMatrix getLocationsFrom(Location start, List<Location> endLocations, long currentTimeInMillis) {
@@ -61,7 +62,6 @@ public class MapManager {
         }
         return returnLoc;
     }
-
 
 }
 

@@ -1,14 +1,22 @@
 package hma.path;
 
+import android.app.Fragment;
 import android.graphics.Color;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 
 public class ResultsActivity extends AppCompatActivity {
 
@@ -35,8 +43,10 @@ public class ResultsActivity extends AppCompatActivity {
 
         StringBuilder patheronies2 = new StringBuilder();
         int[] order = getIntent().getExtras().getIntArray("order");
-        //ArrayList<Location> ogList = (ArrayList<Location>)getIntent().getSerializableExtra("OGList");
-       //patheronies2.append("ogList size: " + ogList.size() + "\n");
+        //ArrayList<Location> ogList = (ArrayList<Location>)getIntent().getExtras().get("OGList");
+        //for (Location loc : ogList) {
+        //    patheronies2.append(loc.getAddressName() + "\n");
+        //}
         for (int i : order) {
             patheronies2.append(i + "\n");
         }
@@ -45,6 +55,6 @@ public class ResultsActivity extends AppCompatActivity {
         pathTaken2.setText(patheronies2.toString());
         LLayout.addView(pathTaken2);
 
-
     }
+
 }
