@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,9 +24,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
-    LinkedList<EditText[]> tasks = new LinkedList<EditText[]>();
+    LinkedList<EditText[]> tasks;
+    LinkedList<EditText[]> priorityTasks;
+    EditText[] endLocationEntry;
+    CheckBox endLocCheckBox;
     boolean demo = true;
 
 
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tasks = new LinkedList<>();
+        priorityTasks = new LinkedList<>();
 
         final LinearLayout LLayout = (LinearLayout) findViewById(R.id.map_entry_layout);
 
@@ -93,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 intent.putExtra("minTime", minTime);
                 intent.putExtra("path", locations);
                 intent.putExtra("order", order);
-                intent.putExtra("OGList", getData(tasks));
+                //intent.putExtra("OGList", getData(tasks));
                 startActivity(intent);
 
             }
@@ -108,14 +116,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         if (entry instanceof ViewGroup) {
             TextView numTab = (TextView)entry.findViewById(R.id.task_count);
             numTab.setText(String.valueOf(entryCount));
-            numTab.setId(R.id.task_count + entryCount*3);
+            numTab.setId(R.id.task_count + entryCount * 4);
+
+
 
 
             EditText[] results = new EditText[2];
             results[0] = (EditText) entry.findViewById(R.id.task_location);
-            results[0].setId(R.id.task_location + entryCount * 3);
+            results[0].setId(R.id.task_location + entryCount * 4);
             results[1] = (EditText) entry.findViewById(R.id.task_duration);
-            results[1].setId(R.id.task_duration + entryCount * 3);
+            results[1].setId(R.id.task_duration + entryCount * 4);
             return results;
         }
         return null;
@@ -135,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         return locationList;
     }
 
+
     public ArrayList<Location> runSimulation() {
         final Location startLocation = (Location) getIntent().getExtras().getSerializable("base_loc");
         List<Location> locationList = new ArrayList<Location>();
@@ -147,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         ArrayList<Location> locations = ShortestPath.getFinalPath();
         return locations;
     }
+
 
     public int[] runSimulation2() {
         final Location startLocation = (Location) getIntent().getExtras().getSerializable("base_loc");
@@ -193,5 +205,60 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
 
         timeSetUp.setText(display.toString());
+    }
+
+    public void updatePriorityList(View view) {
+        ViewParent parent = view.getParent().getParent();
+        EditText[] result = null;
+        /*
+        ListIterator<EditText[]> taskIter = tasks.listIterator();
+        while (taskIter.hasNext() && result == null) {
+            if (taskIter.next()[0].getParent().equals(parent)) {
+                result = taskIter.next();
+
+            }
+        }*/
+        for (EditText[] entry: tasks) {
+            if (entry[0].getParent().equals(parent)) {
+                Toast.makeText(getApplicationContext(), "Found the correct entry!!! Ayla Mao", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
+        boolean checked = ((CheckBox)view).isChecked();
+        if (result != null) {
+            if (checked) {
+                priorityTasks.add(result);
+                tasks.remove(result);
+            }
+            else {
+                tasks.add(result);
+                priorityTasks.remove(result);
+            }
+        }
+
+    }
+
+
+
+    public void updateEndLocation(View view) {
+        if (view.equals(endLocCheckBox)) {
+            Toast.makeText(getApplicationContext(), "End Location found!", Toast.LENGTH_SHORT).show();
+        }
+        EditText[] result = null;
+        /*
+        ListIterator<EditText[]> taskIter = tasks.listIterator();
+        while (taskIter.hasNext() && result == null) {
+            if (taskIter.next()[0].getParent().equals(parent)) {
+                result = taskIter.next();
+
+            }
+        }*/
+        boolean checked = ((CheckBox)view).isChecked();
+        if (result != null) {
+            if (checked) {
+                
+            }
+        }
     }
 }

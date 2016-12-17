@@ -16,7 +16,7 @@ public class ResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        ArrayList<Location> paths = (ArrayList<Location>) getIntent().getSerializableExtra("path");
+        ArrayList<Location> paths = (ArrayList<Location>) getIntent().getExtras().get("path");
         Long timeTaken = getIntent().getExtras().getLong("minTime");
         TextView locationHeader = new TextView(getApplicationContext());
         locationHeader.setTextColor(Color.BLACK);
@@ -36,6 +36,7 @@ public class ResultsActivity extends AppCompatActivity {
         StringBuilder patheronies2 = new StringBuilder();
         int[] order = getIntent().getExtras().getIntArray("order");
         //ArrayList<Location> ogList = (ArrayList<Location>)getIntent().getSerializableExtra("OGList");
+       //patheronies2.append("ogList size: " + ogList.size() + "\n");
         for (int i : order) {
             patheronies2.append(i + "\n");
         }
