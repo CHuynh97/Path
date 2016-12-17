@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import java.text.SimpleDateFormat;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public int minute = Calendar.getInstance().get(Calendar.MINUTE);
 
     public Button timeSetUp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         final LinearLayout LLayout = (LinearLayout) findViewById(R.id.map_entry_layout);
 
         timeSetUp = (Button)findViewById(R.id.time_setup);
-        timeSetUp.setText(hour + ":" + minute);
+        formatDepartTime();
         timeSetUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,16 +52,21 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         });
 
 
-        Button addEntry = (Button) findViewById(R.id.addentry_btn);
+        FloatingActionButton addEntry = (FloatingActionButton) findViewById(R.id.addentry_btn);
         addEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText[] entry = addTask(LLayout, tasks.size()+1);
-                tasks.add(entry);
+                int entryCount = tasks.size();
+                if (entryCount < 10) {
+                    EditText[] entry = addTask(LLayout, tasks.size()+1);
+                    tasks.add(entry);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Cannot have more than 10 entries.", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
-
-       // TimePickerDialog timePickerDialog =
 
         FloatingActionButton submitFAB = (FloatingActionButton)findViewById(R.id.submit_fab);
         submitFAB.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +163,10 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         this.hour = hour;
         this.minute = minute;
 
+        formatDepartTime();
+    }
 
+    public void formatDepartTime() {
         StringBuilder display = new StringBuilder();
 
         if (hour == 12 || hour == 0) {
@@ -183,7 +193,5 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
 
         timeSetUp.setText(display.toString());
-
-
     }
 }

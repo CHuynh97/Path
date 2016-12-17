@@ -67,6 +67,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:gravity="center_vertical"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     android:text="Departure Time:"/>
@@ -75,7 +76,10 @@
                <Button
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
+
+                   android:textSize="20sp"
                    android:text="setup time"
+                   android:background="#0000"
                    android:id="@+id/time_setup"/>
 
 
@@ -93,15 +97,7 @@
             android:orientation="vertical">
 
 
-            <Button
-                android:id="@+id/addentry_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:background="@color/paththeme_green"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:text="+     Add Entry"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -126,7 +122,8 @@
                 android:layout_marginRight="30dp"
                 android:layout_gravity="right"
                 app:backgroundTint="@color/paththeme_green"
-                android:id="@+id/newentry_fab"/>
+                android:src="@drawable/add_entry"
+                android:id="@+id/addentry_btn"/>
 
             <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"
@@ -135,7 +132,8 @@
                 android:layout_marginRight="30dp"
                 android:layout_gravity="right"
                 app:backgroundTint="@color/paththeme_green"
-                android:id="@+id/reset_fab"/>
+                android:src="@drawable/reset_entries"
+                android:id="@+id/reset_fab" />
 
             <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"
@@ -144,6 +142,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_gravity="right"
                 app:backgroundTint="@color/paththeme_green"
+                android:src="@drawable/path_logo"
                 android:id="@+id/submit_fab"/>
 
         </LinearLayout>
