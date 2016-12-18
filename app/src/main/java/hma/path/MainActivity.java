@@ -81,11 +81,10 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             @Override
             public void onClick(View v) {
                 ArrayList<Location> locations = null;
-                //ArrayList<Location> og = getData(tasks);
-                int[] order = null;
+                ArrayList<Location> sim2 = null;;
                 if (demo) {
                     locations = runSimulation();
-                    order = runSimulation2();
+                    sim2 = runSimulation2();
                 }
                 else {
                     final Location startLocation = (Location) getIntent().getExtras().getSerializable("base_loc");
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
                 intent.putExtra("minTime", minTime);
                 intent.putExtra("path", locations);
-                intent.putExtra("order", order);
+                intent.putExtra("sim2", sim2);
                 //intent.putExtra("OGList", og);
                 startActivity(intent);
 
@@ -160,13 +159,20 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
 
 
-    public int[] runSimulation2() {
+    public ArrayList<Location> runSimulation2() {
         final Location startLocation = (Location) getIntent().getExtras().getSerializable("base_loc");
         List<Location> locationList = new ArrayList<Location>();
         locationList.add(new Location("1235 Upper Village Dr", "Mississauga", "ON", "L5E3J6", 10));
         locationList.add(new Location("2800 Erin Centre Blvd", "Mississauga", "ON", "L5M6R5", 12));
         Location finalLoc = new Location("2840 Duncairn Dr", "Mississauga", "ON", "L5M5C6", 13);
-        return ShortestPath.shortestPath(startLocation, locationList, finalLoc, System.currentTimeMillis());
+        int[] resultArr = ShortestPath.shortestPath(startLocation, locationList, finalLoc, System.currentTimeMillis());
+        ArrayList<Location> result = new ArrayList<Location>();
+        result.add(startLocation);
+        for(int index : resultArr) {
+            result.add(locationList.get(index));
+        }
+        result.add(finalLoc);
+        return result;
     }
 
 

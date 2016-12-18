@@ -59,7 +59,7 @@ public class MapManager {
         }
     }
 
-    public static long getTravelTimeFromDirectionRoute(Location a, Location b, long departureTimeInMillis) {
+    public static long getTravelTimeFromDirectionRoute (Location a, Location b, long departureTimeInMillis) {
         try {
             DirectionsRoute route = DirectionsApi.newRequest(context).mode(TravelMode.TRANSIT).origin(formatLocation(a))
                     .destination(formatLocation(b)).departureTime(new DateTime(departureTimeInMillis))
@@ -102,6 +102,7 @@ public class MapManager {
         catch (Exception e) {
 
         }
+
         return route;
 
     }
@@ -110,7 +111,8 @@ public class MapManager {
         LatLng latlng = null;
         try {
             com.google.maps.model.LatLng result =
-                    GeocodingApi.newRequest(context).address(formatLocation(location)).await()[0].geometry.location;
+                    GeocodingApi.newRequest(context).address(formatLocation(location))
+                            .locationType(LocationType.APPROXIMATE).await()[0].geometry.location;
             latlng = new LatLng(result.lat, result.lng);
         }
         catch (Exception e) {

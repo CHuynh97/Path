@@ -21,7 +21,7 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 if (demo) {
-                    final Location location = new  Location("2242 Yorktown circle", "mississauga", "ON", "L6M0G2");
+                    final Location location = new  Location("2242 Yorktown Circle", "Mississauga", "ON", "L6M0G2");
                     intent.putExtra("base_loc", location);
                 }
                 else {

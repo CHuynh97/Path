@@ -46,18 +46,35 @@ public class ResultsActivity extends AppCompatActivity {
         LLayout.addView(pathTaken);
 
         StringBuilder patheronies2 = new StringBuilder();
-        int[] order = getIntent().getExtras().getIntArray("order");
-        //ArrayList<Location> ogList = (ArrayList<Location>)getIntent().getExtras().get("OGList");
-        //for (Location loc : ogList) {
-        //    patheronies2.append(loc.getAddressName() + "\n");
-        //}
-        for (int i : order) {
-            patheronies2.append(i + "\n");
+
+        ArrayList<Location> List2 = (ArrayList<Location>)getIntent().getExtras().get("sim2");
+        for (Location loc : List2) {
+          patheronies2.append(loc.getAddressName() + "\n");
         }
+
         TextView pathTaken2 = new TextView(getApplicationContext());
         pathTaken2.setTextColor(Color.BLUE);
         pathTaken2.setText(patheronies2.toString());
         LLayout.addView(pathTaken2);
+
+
+        StringBuilder coords = new StringBuilder();
+        for (Location loc : List2) {
+            LatLng point = MapManager.convertToLatLng(loc);
+            if (point != null) {
+                coords.append(point.latitude + ", " + point.longitude + "\n");
+            }
+            else {
+                coords.append("Latlng object was null.\n");
+            }
+
+        }
+
+        TextView CoordsTV = new TextView(getApplicationContext());
+        CoordsTV.setTextColor(Color.RED);
+        CoordsTV.setText(coords.toString());
+        LLayout.addView(CoordsTV);
+
 
     }
 
@@ -83,6 +100,16 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
     public String getInstructions(DirectionsRoute route) {
-        return route.overviewPolyline.getEncodedPath();
+
+        StringBuilder steps = new StringBuilder();
+        DirectionsLeg[] legs = route.legs;
+        for (DirectionsLeg leg : legs) {
+            DirectionsStep[] dSteps = leg.steps;
+            for (DirectionsStep step : dSteps) {
+                steps.append(step.htmlInstructions);
+            }
+        }
+        return steps.toString();
+        //return route.overviewPolyline.getEncodedPath();
     }
 }
