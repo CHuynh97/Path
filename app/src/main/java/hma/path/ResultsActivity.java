@@ -11,7 +11,11 @@ import android.widget.TextView;
 
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.DirectionsStep;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +29,7 @@ public class ResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
         ArrayList<Location> paths = (ArrayList<Location>) getIntent().getExtras().get("path");
-        Long timeTaken = getIntent().getExtras().getLong("minTime");
+        long timeTaken = getIntent().getExtras().getLong("minTime");
         TextView locationHeader = new TextView(getApplicationContext());
         locationHeader.setTextColor(Color.BLACK);
         LinearLayout LLayout = (LinearLayout) findViewById(R.id.results);
@@ -57,4 +61,28 @@ public class ResultsActivity extends AppCompatActivity {
 
     }
 
+    public List<LatLng> getPath(DirectionsRoute route) {
+        try {
+            DirectionsLeg[] legs = route.legs;
+            DirectionsStep[] legSteps = legs[0].steps;
+            StringBuilder text = new StringBuilder();
+            List<com.google.maps.model.LatLng> path = new ArrayList<>();
+            for (DirectionsStep step : legSteps) {
+                text.append(step.htmlInstructions);
+                path.addAll(step.polyline.decodePath());
+            }
+            List<LatLng> result = new ArrayList<>();
+            for (com.google.maps.model.LatLng latLng : path) {
+                result.add(new LatLng(latLng.lat, latLng.lng));
+            }
+            return result;
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String getInstructions(DirectionsRoute route) {
+        return route.overviewPolyline.getEncodedPath();
+    }
 }

@@ -1,19 +1,27 @@
 package hma.path;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.model.DirectionsRoute;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,10 +37,15 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String START_LOC_KEY = "START_LOCATION";
     private static final String END_LOC_KEY = "END_LOCATION";
+    private static final String PATH_COORDINATES_KEY = "PATH_COORDINATES";
+    private static final String PATH_INSTRUCTIONS_KEY = "PATH_INSTRUCTIONS";
 
     // TODO: Rename and change types of parameters
     private Location startLocation;
     private Location endLocation;
+    private List<LatLng> pathLine;
+    private String instructions;
+
     private MapView mapView;
     private GoogleMap map;
 
@@ -48,14 +61,19 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback{
      *
      * @param start Start location.
      * @param end End location.
+     * @param path List of LatLng objects which create the path from start to end
+     * @param instructions Route directions to be displayed in the TextView
      * @return A new instance of fragment GoogleMapsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GoogleMapsFragment newInstance(String start, String end) {
+    public static GoogleMapsFragment newInstance(Location start, Location end, ArrayList<LatLng> path, String instructions) {
         GoogleMapsFragment fragment = new GoogleMapsFragment();
         Bundle args = new Bundle();
-        args.putString(START_LOC_KEY, start);
-        args.putString(END_LOC_KEY, end);
+        args.putSerializable(START_LOC_KEY, start);
+        args.putSerializable(END_LOC_KEY, end);
+        args.putSerializable(PATH_COORDINATES_KEY, path);
+        args.putString(PATH_INSTRUCTIONS_KEY, instructions);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,6 +84,8 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback{
         if (getArguments() != null) {
             startLocation = (Location)getArguments().get(START_LOC_KEY);
             endLocation = (Location)getArguments().get(END_LOC_KEY);
+            pathLine = (ArrayList)getArguments().get(PATH_COORDINATES_KEY);
+            instructions = getArguments().getString(PATH_INSTRUCTIONS_KEY);
         }
 
     }
@@ -81,16 +101,39 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback{
             mapView.getMapAsync(this);
         }
 
+        final TextView directions = (TextView)view.findViewById(R.id.directions_tv);
+        directions.setTextColor(Color.BLACK);
+
+
+        FloatingActionButton showDirections = (FloatingActionButton)view.findViewById(R.id.show_directions_fab);
+        showDirections.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (directions.getVisibility() == View.INVISIBLE) {
+                    directions.setVisibility(View.VISIBLE);
+                }
+                else if (directions.getVisibility() == View.VISIBLE) {
+                    directions.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
         return view;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LatLng startCoords = new LatLng(43.655096, -79.386308);
-        LatLng endCoords = new LatLng(43.472435, -80.543306);
+        LatLng startCoords = MapManager.convertToLatLng(startLocation);
+        LatLng endCoords = MapManager.convertToLatLng(endLocation);
         map.addMarker(new MarkerOptions().position(startCoords));
-        map.addPolyline(new PolylineOptions().add(startCoords).add(endCoords));
+        map.addMarker(new MarkerOptions().position(endCoords));
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.addAll(pathLine);
+        polylineOptions.color(Color.BLUE);
+        map.addPolyline(polylineOptions);
+
     }
 
     @Override
