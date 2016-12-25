@@ -1,8 +1,11 @@
 package hma.path;
 
-import android.app.Fragment;
+
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
@@ -23,12 +26,13 @@ import java.util.List;
 
 
 public class ResultsActivity extends AppCompatActivity {
+    GoogleMapsFragment mapsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        ArrayList<Location> paths = (ArrayList<Location>) getIntent().getExtras().get("path");
+
         long timeTaken = getIntent().getExtras().getLong("minTime");
         TextView locationHeader = new TextView(getApplicationContext());
         locationHeader.setTextColor(Color.BLACK);
@@ -36,14 +40,6 @@ public class ResultsActivity extends AppCompatActivity {
         LLayout.setOrientation(LinearLayout.VERTICAL);
         locationHeader.setText("Time: \n" + new Date(timeTaken).toString() + "\n");
         LLayout.addView(locationHeader);
-        StringBuilder patheronies = new StringBuilder();
-        for(Location loc : paths) {
-            patheronies.append(loc.getAddressName() + "\n");
-        }
-        TextView pathTaken = new TextView(getApplicationContext());
-        pathTaken.setTextColor(Color.BLACK);
-        pathTaken.setText(patheronies.toString());
-        LLayout.addView(pathTaken);
 
         StringBuilder patheronies2 = new StringBuilder();
 
@@ -76,19 +72,26 @@ public class ResultsActivity extends AppCompatActivity {
         LLayout.addView(CoordsTV);
 
 
+        DirectionsRoute route = MapManager.getRoute(List2.get(0), List2.get(1), System.currentTimeMillis());
+        mapsFragment = GoogleMapsFragment.newInstance(List2.get(0), List2.get(1), getPath(route));
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(LLayout.getId(), mapsFragment);
+        fragmentTransaction.commit();
+
     }
 
-    public List<LatLng> getPath(DirectionsRoute route) {
+    public ArrayList<LatLng> getPath(DirectionsRoute route) {
         try {
             DirectionsLeg[] legs = route.legs;
             DirectionsStep[] legSteps = legs[0].steps;
-            StringBuilder text = new StringBuilder();
+            //StringBuilder text = new StringBuilder();
             List<com.google.maps.model.LatLng> path = new ArrayList<>();
             for (DirectionsStep step : legSteps) {
-                text.append(step.htmlInstructions);
                 path.addAll(step.polyline.decodePath());
             }
-            List<LatLng> result = new ArrayList<>();
+            ArrayList<LatLng> result = new ArrayList<>();
             for (com.google.maps.model.LatLng latLng : path) {
                 result.add(new LatLng(latLng.lat, latLng.lng));
             }
@@ -110,6 +113,13 @@ public class ResultsActivity extends AppCompatActivity {
             }
         }
         return steps.toString();
-        //return route.overviewPolyline.getEncodedPath();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapsFragment.onPause();
+    }
+
+
 }

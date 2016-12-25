@@ -1,6 +1,7 @@
 package hma.path;
 
 
+import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DistanceMatrixApi;
@@ -9,12 +10,10 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import com.google.maps.model.LocationType;
 import com.google.maps.model.TravelMode;
-import com.google.maps.DirectionsApiRequest;
 import java.util.List;
 import org.joda.time.DateTime;
 
@@ -114,6 +113,7 @@ public class MapManager {
                     GeocodingApi.newRequest(context).address(formatLocation(location))
                             .locationType(LocationType.APPROXIMATE).await()[0].geometry.location;
             latlng = new LatLng(result.lat, result.lng);
+
         }
         catch (Exception e) {
 
@@ -121,5 +121,8 @@ public class MapManager {
         return latlng;
     }
 
+    public void disconnect() {
+
+    }
 }
 
