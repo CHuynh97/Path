@@ -1,9 +1,9 @@
-package hma.path;
+package hma.path.mapcontrol;
 
-import java.net.URL;
+import android.os.AsyncTask;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import com.google.maps.model.DistanceMatrix;
@@ -13,8 +13,7 @@ import com.google.maps.model.DistanceMatrixElement;
  * Hello world!
  *
  */
-public class ShortestPath
-{
+public class ShortestPath {
     private static long minTime = 0;
     private static List<Location> Locations;
     private static List<Location> skippedLocations = new ArrayList<Location>();
@@ -26,6 +25,15 @@ public class ShortestPath
 
     public static ArrayList<Location> getFinalPath() {
         return (ArrayList<Location>)finalPath;
+    }
+
+    public class pathCalculator extends AsyncTask<Void, Void, Void> {
+        @Override
+        public Void doInBackground(Void... Params) {
+            return null;
+        }
+
+
     }
 
     public static void getShortestPath(Location start, List<Location> midNodes, Location endLocation) {

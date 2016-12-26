@@ -5,7 +5,7 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="hma.path.GoogleMapsFragment">
+    tools:context=".fragments.GoogleMapsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

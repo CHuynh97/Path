@@ -1,10 +1,12 @@
-package hma.path;
+package hma.path.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import hma.path.R;
 
 public class Help extends AppCompatActivity {
 

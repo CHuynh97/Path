@@ -1,4 +1,4 @@
-package hma.path;
+package hma.path.fragments;
 
 
 import android.content.Context;
@@ -16,15 +16,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.model.DirectionsRoute;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import hma.path.mapcontrol.Location;
+import hma.path.mapcontrol.MapManager;
+import hma.path.R;
 
 
 /**
@@ -49,6 +50,7 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback {
     private List<LatLng> pathLine;
     private String instructions;
 
+    private SupportMapFragment mapFragment;
     private GoogleMap map;
 
     //private OnFragmentInteractionListener mListener;
@@ -110,18 +112,16 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 if (directions.getVisibility() == View.INVISIBLE) {
                     directions.setVisibility(View.VISIBLE);
-                }
-                else if (directions.getVisibility() == View.VISIBLE) {
+                } else if (directions.getVisibility() == View.VISIBLE) {
                     directions.setVisibility(View.INVISIBLE);
                 }
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.map_view);
+        mapFragment = (SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.map_view);
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
-
         return view;
     }
 
@@ -133,14 +133,22 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback {
 
         map.addMarker(new MarkerOptions().position(startCoords));
         map.addMarker(new MarkerOptions().position(endCoords));
-        //CameraPosition position = new CameraPosition(startCoords, 15, 0, 0);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(startCoords, 15));
+        //CameraPosition position = new CameraPosition(startCoords, 13, 0, 0);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(startCoords, 13));
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.addAll(pathLine);
         polylineOptions.color(Color.BLUE);
         map.addPolyline(polylineOptions);
 
+        /*
+        try {
+            map.setMyLocationEnabled(true);
+        }
+        catch (SecurityException se) {
+
+        }
+        */
 
     }
 
@@ -159,15 +167,28 @@ public class GoogleMapsFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onDetach() {
+        mapFragment.onDetach();
         super.onDetach();
         //mListener = null;
     }
 
     @Override
     public void onDestroy() {
+        mapFragment.onDestroy();
         super.onDestroy();
     }
 
+    @Override
+    public void onPause() {
+        mapFragment.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mapFragment.onResume();
+        super.onResume();
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

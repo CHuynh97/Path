@@ -1,21 +1,15 @@
-package hma.path;
+package hma.path.activities;
 
 
 import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsStep;
@@ -23,6 +17,11 @@ import com.google.maps.model.DirectionsStep;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import hma.path.fragments.GoogleMapsFragment;
+import hma.path.mapcontrol.Location;
+import hma.path.mapcontrol.MapManager;
+import hma.path.R;
 
 
 public class ResultsActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package hma.path;
+package hma.path.mapcontrol;
 
 import android.location.Address;
 import android.text.TextUtils;

@@ -1,7 +1,6 @@
-package hma.path;
+package hma.path.mapcontrol;
 
 
-import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DistanceMatrixApi;

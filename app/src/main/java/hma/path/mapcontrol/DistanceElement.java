@@ -1,4 +1,4 @@
-package hma.path;
+package hma.path.mapcontrol;
 
 /**
  * Created by Vtkachuk on 16-11-19.

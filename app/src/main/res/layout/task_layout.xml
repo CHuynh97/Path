@@ -34,7 +34,7 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="updatePriorityList"/>
+                android:id="@+id/priority_cb"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -45,8 +45,7 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:onClick="updateEndLocation"/>
+                android:id="@+id/endloc_cb"/>
 
             <TextView
                 android:layout_width="wrap_content"
