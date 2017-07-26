@@ -5,14 +5,34 @@
     android:layout_height="wrap_content">
 
     <!-- element to display task entry number -->
-    <TextView
+    <FrameLayout
         android:layout_width="75dp"
         android:layout_height="match_parent"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:background="@color/entry_numbackground"
-        android:textColor="@color/white"
-        android:textSize="36sp"
-        android:id="@+id/task_count"/>
+        android:paddingStart="0dp"
+
+        android:background="@color/entry_numbackground">
+
+        <Button
+            android:width="15dp"
+            android:layout_height="25dp"
+            android:layout_gravity="top|left"
+            android:background="@android:color/transparent"
+            android:text="X"
+            android:textColor="@color/white"
+
+            android:id="@+id/destroytask_btn"
+            android:layout_width="15dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="36sp"
+            android:text="8"
+            android:id="@+id/task_count"/>
+    </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +65,7 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/endloc_cb"/>
+                android:id="@+id/end_location"/>
 
             <TextView
                 android:layout_width="wrap_content"

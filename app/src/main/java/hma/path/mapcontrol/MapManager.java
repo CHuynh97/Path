@@ -1,6 +1,9 @@
 package hma.path.mapcontrol;
 
 
+import android.widget.TextView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.DirectionsApi;
 import com.google.maps.DistanceMatrixApi;
@@ -15,6 +18,7 @@ import com.google.maps.model.LocationType;
 import com.google.maps.model.TravelMode;
 import java.util.List;
 import org.joda.time.DateTime;
+import org.w3c.dom.Text;
 
 
 public class MapManager {
@@ -26,7 +30,6 @@ public class MapManager {
 
     static {
         context = new GeoApiContext().setApiKey(API_KEY);
-
     }
 
     public static DistanceMatrix getLocationsFrom(Location start, List<Location> endLocations, long currentTimeInMillis) {
@@ -105,6 +108,8 @@ public class MapManager {
 
     }
 
+
+
     public static LatLng convertToLatLng(Location location) {
         LatLng latlng = null;
         try {
@@ -120,8 +125,19 @@ public class MapManager {
         return latlng;
     }
 
-    public void disconnect() {
-
+    public static String convertToLocation(LatLng latLng, TextView textView) {
+        try {
+            com.google.maps.model.LatLng coords = new com.google.maps.model.LatLng(latLng.latitude, latLng.longitude);
+            String result = GeocodingApi.newRequest(context).latlng(coords)
+                    .locationType(LocationType.APPROXIMATE).await()[0].placeId;
+            textView.setText(result);
+            //return new Location(Location.parseAddress(result), timeAtLocation);
+            return result;
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
+
 }
 

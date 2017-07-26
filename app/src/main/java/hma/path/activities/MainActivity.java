@@ -4,6 +4,7 @@ package hma.path.activities;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,27 +20,29 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 
 import hma.path.fragments.TaskFragment;
 import hma.path.mapcontrol.Location;
 import hma.path.R;
+import hma.path.mapcontrol.MapManager;
 import hma.path.mapcontrol.ShortestPath;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener,
         TaskFragment.OnFragmentInteractionListener {
-    LinkedList<TaskFragment> taskFragments;
-    LinkedList<Location> tasks;
-    LinkedList<Location> priorityTasks;
+    ArrayList<TaskFragment> taskFragments;
+    ArrayList<Location> tasks;
+    ArrayList<Location> priorityTasks;
 
+    TaskFragment finalTask;
     Location endLocation;
-    CheckBox endLocCheckBox;
+    boolean useCurr;
+
     boolean demo = true;
-
-
 
     public int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     public int minute = Calendar.getInstance().get(Calendar.MINUTE);
@@ -51,9 +53,19 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tasks = new LinkedList<>();
-        priorityTasks = new LinkedList<>();
-        taskFragments = new LinkedList<>();
+        tasks = new ArrayList<>();
+        priorityTasks = new ArrayList<>();
+        taskFragments = new ArrayList<>();
+        useCurr = getIntent().getBooleanExtra("USE_CURRENT", false);
+        EditText startLocEdit = (EditText) findViewById(R.id.startloc_edit);
+        if (useCurr) {
+            startLocEdit.setText("Current Location");
+            startLocEdit.setFocusable(false);
+        }
+        else {
+            String baseLoc = (String) getIntent().getExtras().get("BASE_LOCATION");
+            startLocEdit.setText(baseLoc);
+        }
 
         final LinearLayout LLayout = (LinearLayout)findViewById(R.id.entry_layout);
 
@@ -76,10 +88,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 boolean makeEndLoc = (entryCount == 0);
 
                 if (entryCount < 10) {
-                    /*
-                    EditText[] entry = addTask(LLayout, tasks.size()+1);
-                    tasks.add(entry);
-                    */
                     TaskFragment task = TaskFragment.newInstance(makeEndLoc, entryCount+1);
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
@@ -87,8 +95,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                     transaction.commit();
                     taskFragments.add(task);
                     if (makeEndLoc) {
-                        endLocCheckBox = task.getEndLocCB();
-                        endLocation = task.getLocation();
+                        finalTask = task;
                     }
                 }
                 else {
@@ -98,28 +105,65 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             }
         });
 
+        FloatingActionButton resetFAB = (FloatingActionButton)findViewById(R.id.reset_fab);
+        resetFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                for (TaskFragment fragment : taskFragments) {
+                    transaction.remove(fragment);
+                }
+                transaction.commit();
+                taskFragments.clear();
+                tasks.clear();
+                priorityTasks.clear();
+            }
+        });
+
         FloatingActionButton submitFAB = (FloatingActionButton)findViewById(R.id.submit_fab);
         submitFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (demo) {
+
+                    TextView textView = new TextView(getApplicationContext());
+                    textView.setTextColor(Color.BLUE);
+                    if (useCurr) {
+                        LatLng currLoc = (LatLng) getIntent().getExtras().get("CURRENT_LATLNG");
+                        String print = currLoc.latitude + ", " + currLoc.longitude;
+                        textView.setText(print);
+                    }
+                    else {
+
+                    }
+                    LLayout.addView(textView);
+
+                }
+                /*
                 ArrayList<Location> locations = null;
-                ArrayList<Location> sim2 = null;;
+                ArrayList<Location> sim2 = null;
+                int[] order = null;
                 if (demo) {
                     locations = runSimulation();
                     sim2 = runSimulation2();
                 }
                 else {
-
+                    Location startLoc = (Location)getIntent().getSerializableExtra("base_loc");
+                    sortTasks();
+                    long startTime = hour*60*60*1000 + minute*60*1000;
+                    order = ShortestPath.shortestPath(startLoc, tasks, finalTask.getLocation(), startTime);
+                    sim2 = (ArrayList<Location>)tasks.clone();
                 }
                 long minTime = ShortestPath.getMinimumTime();
 
                 Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
                 intent.putExtra("minTime", minTime);
                 intent.putExtra("path", locations);
+                intent.putExtra("order", order);
                 intent.putExtra("sim2", sim2);
                 //intent.putExtra("OGList", og);
                 startActivity(intent);
-
+            */
             }
         });
     }
@@ -127,27 +171,44 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
 
     @Override
-    public void onTaskEndLocInteraction(boolean checked, TaskFragment taskFragment) {
-        if (checked) {
-            if (endLocCheckBox != null) {
-                endLocCheckBox.setChecked(false);
-                endLocCheckBox = taskFragment.getEndLocCB();
-                endLocation = taskFragment.getLocation();
+    public void onTaskEndLocInteraction(TaskFragment taskFragment) {
+        if (taskFragment.isEndLocation()) {
+            if (finalTask != taskFragment) {
+                finalTask.getEndLocCB().setChecked(false);
+                finalTask = taskFragment;
             }
-            endLocation = taskFragment.getLocation();
+        }
+        else {
+            if (finalTask == taskFragment) {
+                Toast.makeText(getApplicationContext(), "There must be a tan end location selected.", Toast.LENGTH_LONG).show();
+                finalTask.setIsEndLocation(true);
+            }
         }
     }
 
+    @Override
+    public void onDestroyRequest(TaskFragment taskFragment) {
 
+        if (taskFragments.contains(taskFragment) && taskFragment.isAdded()) {
+            taskFragments.remove(taskFragment);
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(taskFragment);
+        transaction.commit();
+    }
 
-    public void sortTasks() {
+    public void sortTasks() throws Exception {
         if (tasks != null && priorityTasks != null && taskFragments != null) {
+            priorityTasks.clear();
+            tasks.clear();
             for (TaskFragment taskFragment : taskFragments) {
-                if (taskFragment.isPriority()) {
-                    priorityTasks.add(taskFragment.getLocation());
-                }
-                else if (!taskFragment.isEndLocation()){
-                    tasks.add(taskFragment.getLocation());
+                if (taskFragment != finalTask){
+                    if (taskFragment.isPriority()) {
+                        priorityTasks.add(taskFragment.getLocation());
+                    }
+                    else {
+                        tasks.add(taskFragment.getLocation());
+                    }
                 }
                 else {
                     endLocation = taskFragment.getLocation();

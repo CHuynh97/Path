@@ -3,13 +3,13 @@ package hma.path.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import hma.path.R;
 import hma.path.mapcontrol.Location;
 
@@ -43,9 +43,13 @@ public class TaskFragment extends Fragment {
     }
 
     public Location getLocation() {
-        String text = locationText.getText().toString();
-        long duration = Long.parseLong(durationText.getText().toString());
-        return new Location(Location.parseAddress(text), duration);
+        String locText = locationText.getText().toString();
+        String timeText = durationText.getText().toString();
+        long duration = 0;
+        if (!timeText.equals("")) {
+            duration = Long.parseLong(timeText);
+        }
+        return new Location(Location.parseAddress(locText), duration);
     }
 
     public CheckBox getEndLocCB() {
@@ -57,6 +61,12 @@ public class TaskFragment extends Fragment {
     }
     public boolean isEndLocation() {
         return isEndLocation;
+    }
+
+
+    public void setIsEndLocation(boolean set) {
+        isEndLocation = set;
+        endLocCB.setChecked(set);
     }
 
     /**
@@ -85,6 +95,7 @@ public class TaskFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,11 +114,13 @@ public class TaskFragment extends Fragment {
             }
         });
 
-        endLocCB = (CheckBox)view.findViewById(R.id.endloc_cb);
+        endLocCB = (CheckBox)view.findViewById(R.id.end_location);
+        endLocCB.setChecked(isEndLocation);
         endLocCB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onTaskEndLocInteraction(endLocCB.isChecked(), TaskFragment.this);
+                isEndLocation = endLocCB.isChecked();
+                mListener.onTaskEndLocInteraction(TaskFragment.this);
             }
         });
 
@@ -145,7 +158,8 @@ public class TaskFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-       void onTaskEndLocInteraction(boolean checked, TaskFragment taskFragment);
+        void onTaskEndLocInteraction(TaskFragment taskFragment);
+        void onDestroyRequest(TaskFragment taskFragment);
     }
 
 
